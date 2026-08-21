@@ -1,0 +1,37 @@
+[
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": 3,
+    "estado": "Aceptado",
+    "motivo": "La persona cumple la edad requerida y hay notebooks disponibles."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": 3,
+    "estado": "Aceptado",
+    "motivo": "La persona cumple la edad requerida y hay notebooks disponibles."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 17,
+    "cupos": 3,
+    "estado": "Rechazado",
+    "motivo": "La persona es menor de 18 años."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": 0,
+    "estado": "Rechazado",
+    "motivo": "No hay notebooks disponibles."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": -1,
+    "estado": "Dato inválido",
+    "motivo": "La cantidad de notebooks no puede ser negativa."
+  }
+]

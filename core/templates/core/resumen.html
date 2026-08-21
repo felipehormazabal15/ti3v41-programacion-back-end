@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen de préstamos</title>
+</head>
+<body>
+    <h1>Resumen de préstamos de notebooks</h1>
+
+    {% if registros %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Edad</th>
+                    <th>Cupos</th>
+                    <th>Estado</th>
+                    <th>Motivo</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.nombre }}</td>
+                        <td>{{ registro.edad }}</td>
+                        <td>{{ registro.cupos }}</td>
+                        <td>{{ registro.estado }}</td>
+                        <td>{{ registro.motivo }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No existen registros.</p>
+    {% endif %}
+</body>
+</html>
