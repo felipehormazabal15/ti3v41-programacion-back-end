@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if es_edicion %}Editar préstamo{% else %}Registrar préstamo{% endif %}</title>
+</head>
+<body>
+    <h1>{% if es_edicion %}Editar préstamo de notebook{% else %}Registrar préstamo de notebook{% endif %}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if es_edicion %}Guardar cambios{% else %}Guardar préstamo{% endif %}</button>
+    </form>
+
+    <p><a href="{% url 'prestamo_lista' %}">Volver al listado</a></p>
+</body>
+</html>

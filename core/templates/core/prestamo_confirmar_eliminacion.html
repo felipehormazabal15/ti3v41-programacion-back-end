@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar eliminación</title>
+</head>
+<body>
+    <h1>Confirmar eliminación</h1>
+    <p>¿Deseas eliminar el préstamo de {{ prestamo.nombre }}?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Eliminar préstamo</button>
+    </form>
+
+    <p><a href="{% url 'prestamo_lista' %}">Cancelar y volver al listado</a></p>
+</body>
+</html>

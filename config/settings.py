@@ -3,12 +3,15 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Seguridad
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
 
+# Aplicaciones instaladas
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -20,6 +23,7 @@ INSTALLED_APPS = [
 ]
 
 
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -31,9 +35,11 @@ MIDDLEWARE = [
 ]
 
 
+# URLs
 ROOT_URLCONF = "config.urls"
 
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -50,9 +56,11 @@ TEMPLATES = [
 ]
 
 
+# WSGI
 WSGI_APPLICATION = "config.wsgi.application"
 
 
+# Base de datos
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -61,6 +69,7 @@ DATABASES = {
 }
 
 
+# Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -72,12 +81,13 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 
-LANGUAGE_CODE = "es-cl"
+# Internacionalización
+LANGUAGE_CODE = "es"
 
 TIME_ZONE = "America/Santiago"
 
@@ -86,7 +96,15 @@ USE_I18N = True
 USE_TZ = True
 
 
+# Archivos estáticos
 STATIC_URL = "static/"
 
 
+# Tipo de clave primaria
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Autenticación
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "prestamo_lista"
+LOGOUT_REDIRECT_URL = "login"

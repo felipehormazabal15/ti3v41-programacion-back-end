@@ -33,5 +33,19 @@
     "cupos": -1,
     "estado": "Dato inválido",
     "motivo": "La cantidad de notebooks no puede ser negativa."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": 3,
+    "estado": "Aceptado",
+    "motivo": "La persona cumple la edad requerida y hay notebooks disponibles."
+  },
+  {
+    "nombre": "Felipe",
+    "edad": 20,
+    "cupos": 3,
+    "estado": "Aceptado",
+    "motivo": "La persona cumple la edad requerida y hay notebooks disponibles."
   }
 ]

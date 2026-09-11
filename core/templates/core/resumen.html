@@ -7,32 +7,54 @@
 <body>
     <h1>Resumen de préstamos de notebooks</h1>
 
-    {% if registros %}
+    <p>
+        <a href="{% url 'prestamo_crear' %}">
+            Registrar nuevo préstamo
+        </a>
+    </p>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Cerrar sesión</button>
+    </form>
+
+    {% if prestamos %}
         <table border="1">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Edad</th>
-                    <th>Cupos</th>
+                    <th>Cupos disponibles</th>
                     <th>Estado</th>
                     <th>Motivo</th>
+                    <th>Fecha de creación</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for registro in registros %}
+                {% for prestamo in prestamos %}
                     <tr>
-                        <td>{{ registro.nombre }}</td>
-                        <td>{{ registro.edad }}</td>
-                        <td>{{ registro.cupos }}</td>
-                        <td>{{ registro.estado }}</td>
-                        <td>{{ registro.motivo }}</td>
+                        <td>{{ prestamo.nombre }}</td>
+                        <td>{{ prestamo.edad }}</td>
+                        <td>{{ prestamo.cupos_disponibles }}</td>
+                        <td>{{ prestamo.get_estado_display }}</td>
+                        <td>{{ prestamo.motivo }}</td>
+                        <td>{{ prestamo.creado_en }}</td>
+                        <td>
+                            <a href="{% url 'prestamo_editar' prestamo.pk %}">
+                                Editar
+                            </a>
+                            <a href="{% url 'prestamo_eliminar' prestamo.pk %}">
+                                Eliminar
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>No existen registros.</p>
+        <p>No existen préstamos registrados.</p>
     {% endif %}
 </body>
 </html>
