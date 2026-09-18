@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -35,6 +36,11 @@ def prestamo_crear(request):
 
             prestamo.save()
 
+            messages.success(
+                request,
+                "El préstamo fue creado correctamente.",
+            )
+
             return redirect("prestamo_lista")
 
     else:
@@ -71,6 +77,11 @@ def prestamo_editar(request, pk):
 
             prestamo.save()
 
+            messages.success(
+                request,
+                "El préstamo fue actualizado correctamente.",
+            )
+
             return redirect("prestamo_lista")
 
     else:
@@ -98,6 +109,12 @@ def prestamo_eliminar(request, pk):
 
     if request.method == "POST":
         prestamo.soft_delete()
+
+        messages.success(
+            request,
+            "El préstamo fue eliminado correctamente.",
+        )
+
         return redirect("prestamo_lista")
 
     return render(

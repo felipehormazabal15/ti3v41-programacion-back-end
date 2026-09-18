@@ -18,6 +18,12 @@
         <button type="submit">Cerrar sesión</button>
     </form>
 
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
     {% if prestamos %}
         <table border="1">
             <thead>
@@ -45,6 +51,7 @@
                             <a href="{% url 'prestamo_editar' prestamo.pk %}">
                                 Editar
                             </a>
+
                             <a href="{% url 'prestamo_eliminar' prestamo.pk %}">
                                 Eliminar
                             </a>
