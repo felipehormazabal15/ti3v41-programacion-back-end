@@ -1,0 +1,126 @@
+PRUEBAS ES3 - AUTENTICACIÓN Y PERMISOS
+=======================================
+
+Proyecto:
+Sistema de Préstamo de Notebooks
+
+Endpoint:
+GET /api/prestamos/
+
+--------------------------------------------------
+PRUEBA 1 - GET SIN TOKEN
+--------------------------------------------------
+
+Solicitud:
+GET /api/prestamos/
+
+Resultado:
+401 Unauthorized
+
+Respuesta JSON:
+{"detail":"Las credenciales de autenticación no se proveyeron."}
+
+Conclusión:
+La API rechaza solicitudes sin autenticación.
+
+
+--------------------------------------------------
+PRUEBA 2 - POST CON USUARIO SIN GRUPO
+--------------------------------------------------
+
+Usuario:
+api_prueba
+
+Solicitud:
+POST /api/prestamos/
+
+Resultado:
+403 Forbidden
+
+Conclusión:
+Un usuario autenticado pero sin un grupo autorizado no puede crear préstamos.
+
+
+--------------------------------------------------
+PRUEBA 3 - POST CON USUARIO NORMAL
+--------------------------------------------------
+
+Usuario:
+usuario_normal
+
+Solicitud:
+POST /api/prestamos/
+
+Resultado:
+201 Created
+
+Conclusión:
+El usuario del grupo normal puede crear préstamos.
+
+
+--------------------------------------------------
+PRUEBA 4 - PATCH CON USUARIO NORMAL
+--------------------------------------------------
+
+Usuario:
+usuario_normal
+
+Solicitud:
+PATCH /api/prestamos/13/
+
+Resultado:
+403 Forbidden
+
+Conclusión:
+El usuario normal no puede modificar préstamos.
+
+
+--------------------------------------------------
+PRUEBA 5 - PATCH CON USUARIO ADMIN
+--------------------------------------------------
+
+Usuario:
+usuario_admin
+
+Solicitud:
+PATCH /api/prestamos/13/
+
+Resultado:
+200 OK
+
+Conclusión:
+El usuario admin puede modificar préstamos.
+
+
+--------------------------------------------------
+PRUEBA 6 - DELETE CON USUARIO NORMAL
+--------------------------------------------------
+
+Usuario:
+usuario_normal
+
+Solicitud:
+DELETE /api/prestamos/13/
+
+Resultado:
+403 Forbidden
+
+Conclusión:
+El usuario normal no puede eliminar préstamos.
+
+
+--------------------------------------------------
+PRUEBA 7 - DELETE CON USUARIO ADMIN
+--------------------------------------------------
+
+Usuario:
+usuario_admin
+
+Solicitud:
+DELETE /api/prestamos/13/
+
+Resultado:
+204 No Content
+
+Conclusión:
+El usuario admin puede eliminar préstamos mediante borrado lógico.

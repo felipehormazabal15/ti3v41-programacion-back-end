@@ -1,0 +1,156 @@
+PRUEBAS ES3 - RESPUESTAS HTTP, VALIDACIÓN Y PAGINACIÓN
+=======================================================
+
+Proyecto:
+Sistema de Préstamo de Notebooks
+
+
+--------------------------------------------------
+PRUEBA 1 - POST CORRECTO
+--------------------------------------------------
+
+Endpoint:
+POST /api/prestamos/
+
+Usuario:
+usuario_normal
+
+Resultado:
+201 Created
+
+Registro creado:
+ID 12
+
+Estado:
+ACEPTADO
+
+Conclusión:
+La creación correcta de un recurso devuelve HTTP 201 Created.
+
+
+--------------------------------------------------
+PRUEBA 2 - POST CON EDAD MENOR DE 18 AÑOS
+--------------------------------------------------
+
+Endpoint:
+POST /api/prestamos/
+
+Usuario:
+usuario_normal
+
+Resultado:
+201 Created
+
+Registro creado:
+ID 13
+
+Estado:
+RECHAZADO
+
+Motivo:
+La persona es menor de 18 años.
+
+Conclusión:
+La edad menor de 18 años corresponde a una regla de negocio,
+por lo que el recurso se crea correctamente y su estado queda
+como RECHAZADO.
+
+
+--------------------------------------------------
+PRUEBA 3 - POST CON CUPOS NEGATIVOS
+--------------------------------------------------
+
+Endpoint:
+POST /api/prestamos/
+
+Usuario:
+usuario_normal
+
+Datos:
+cupos_disponibles = -1
+
+Resultado:
+400 Bad Request
+
+Respuesta JSON:
+{"cupos_disponibles":["La cantidad de notebooks no puede ser negativa."]}
+
+Conclusión:
+La validación del serializer rechaza datos inválidos mediante HTTP 400.
+
+
+--------------------------------------------------
+PRUEBA 4 - GET LISTADO
+--------------------------------------------------
+
+Endpoint:
+GET /api/prestamos/
+
+Usuario:
+usuario_normal
+
+Resultado:
+200 OK
+
+Paginación:
+count = 11
+page_size = 10
+
+La respuesta incluye:
+- count
+- next
+- previous
+- results
+
+Conclusión:
+El listado funciona correctamente y utiliza paginación de 10 registros
+por página.
+
+
+--------------------------------------------------
+PRUEBA 5 - GET DETALLE EXISTENTE
+--------------------------------------------------
+
+Endpoint:
+GET /api/prestamos/13/
+
+Resultado:
+200 OK
+
+Conclusión:
+La API permite consultar un préstamo existente mediante su identificador.
+
+
+--------------------------------------------------
+PRUEBA 6 - GET RECURSO INEXISTENTE
+--------------------------------------------------
+
+Endpoint:
+GET /api/prestamos/99999/
+
+Resultado:
+404 Not Found
+
+Respuesta JSON:
+{"detail":"No PrestamoNotebook matches the given query."}
+
+Conclusión:
+La API devuelve HTTP 404 cuando el recurso solicitado no existe.
+
+
+--------------------------------------------------
+PRUEBA 7 - GET DESPUÉS DE BORRADO LÓGICO
+--------------------------------------------------
+
+Endpoint:
+GET /api/prestamos/13/
+
+Resultado:
+404 Not Found
+
+Contexto:
+El registro 13 fue eliminado mediante DELETE utilizando el usuario admin.
+
+Conclusión:
+El borrado lógico funciona correctamente, ya que los registros marcados
+como eliminados dejan de aparecer en la API.

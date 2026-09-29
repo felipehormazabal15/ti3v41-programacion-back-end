@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
     "core",
 ]
 
@@ -35,11 +37,11 @@ MIDDLEWARE = [
 ]
 
 
-# URLs
+# Configuración principal
 ROOT_URLCONF = "config.urls"
 
 
-# Templates
+# Plantillas
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -56,7 +58,6 @@ TEMPLATES = [
 ]
 
 
-# WSGI
 WSGI_APPLICATION = "config.wsgi.application"
 
 
@@ -100,11 +101,26 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
-# Tipo de clave primaria
+# Modelo de usuario por defecto
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Autenticación
+# Configuración de inicio/cierre de sesión del HTML
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "prestamo_lista"
 LOGOUT_REDIRECT_URL = "login"
+
+
+# Configuración de Django REST Framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": (
+        "rest_framework.pagination.PageNumberPagination"
+    ),
+    "PAGE_SIZE": 10,
+}

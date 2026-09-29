@@ -1,0 +1,124 @@
+PRUEBAS ES3 - ESTRUCTURA RESTFUL DE LA API
+===========================================
+
+Proyecto:
+Sistema de Préstamo de Notebooks
+
+
+RECURSO PRINCIPAL
+-----------------
+
+Recurso:
+prestamos
+
+Ruta base:
+/api/prestamos/
+
+La URL utiliza un sustantivo plural y las operaciones se realizan
+mediante los métodos HTTP.
+
+
+OPERACIONES DISPONIBLES
+-----------------------
+
+1. LISTAR RECURSOS
+
+Método:
+GET
+
+Endpoint:
+/api/prestamos/
+
+Resultado probado:
+200 OK
+
+Uso:
+Obtiene el listado paginado de préstamos.
+
+
+2. CREAR RECURSO
+
+Método:
+POST
+
+Endpoint:
+/api/prestamos/
+
+Resultado probado:
+201 Created
+
+Uso:
+Crea un nuevo préstamo.
+
+
+3. CONSULTAR UN RECURSO
+
+Método:
+GET
+
+Endpoint:
+/api/prestamos/<id>/
+
+Resultado probado:
+200 OK para un ID existente.
+
+Uso:
+Obtiene el detalle de un préstamo.
+
+
+4. ACTUALIZAR UN RECURSO
+
+Método:
+PATCH
+
+Endpoint:
+/api/prestamos/<id>/
+
+Resultado probado:
+200 OK con usuario admin.
+
+Uso:
+Actualiza parcialmente los datos permitidos del préstamo.
+
+
+5. ELIMINAR UN RECURSO
+
+Método:
+DELETE
+
+Endpoint:
+/api/prestamos/<id>/
+
+Resultado probado:
+204 No Content con usuario admin.
+
+Uso:
+Realiza el borrado lógico del préstamo.
+
+
+REGLAS REST APLICADAS
+---------------------
+
+- Las URLs utilizan sustantivos y no verbos.
+- GET se utiliza para consultar información.
+- POST se utiliza para crear recursos.
+- PATCH se utiliza para modificaciones parciales.
+- DELETE se utiliza para eliminar recursos.
+- Las operaciones están protegidas mediante autenticación por token.
+- Los permisos dependen del rol del usuario.
+
+
+ROUTER
+------
+
+La API utiliza DefaultRouter de Django REST Framework.
+
+Registro del recurso:
+
+router.register(
+    r"prestamos",
+    PrestamoNotebookViewSet,
+    basename="prestamo",
+)
+
+Esto genera las rutas REST para el recurso /api/prestamos/.

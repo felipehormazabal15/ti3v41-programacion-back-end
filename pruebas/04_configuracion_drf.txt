@@ -1,0 +1,229 @@
+EVIDENCIA ES3 - CONFIGURACIÓN DJANGO REST FRAMEWORK
+====================================================
+
+Proyecto:
+Sistema de Préstamo de Notebooks
+
+
+1. APLICACIONES INSTALADAS
+--------------------------
+
+En config/settings.py se configuró:
+
+"rest_framework",
+"rest_framework.authtoken",
+
+Esto permite utilizar Django REST Framework y autenticación
+mediante tokens.
+
+
+2. CONFIGURACIÓN REST_FRAMEWORK
+-------------------------------
+
+Se configuró:
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": (
+        "rest_framework.pagination.PageNumberPagination"
+    ),
+    "PAGE_SIZE": 10,
+}
+
+
+3. AUTENTICACIÓN
+----------------
+
+Método utilizado:
+TokenAuthentication
+
+Endpoint para obtener token:
+
+POST /api/token/
+
+Los tokens se envían mediante el encabezado:
+
+Authorization: Token <TOKEN>
+
+
+4. PERMISOS
+-----------
+
+Se implementó:
+
+core/permissions.py
+
+Clase:
+PrestamoNotebookPermission
+
+Reglas:
+
+- Usuarios autenticados pueden consultar.
+- Usuarios de los grupos admin y normal pueden crear.
+- Solo usuarios del grupo admin pueden modificar.
+- Solo usuarios del grupo admin pueden eliminar.
+
+
+5. SERIALIZER
+-------------
+
+Archivo:
+
+core/serializers.py
+
+Clase:
+
+PrestamoNotebookSerializer
+
+Se utiliza ModelSerializer.
+
+Campos expuestos:
+
+- id
+- nombre
+- edad
+- cupos_disponibles
+- estado
+- motivo
+- creado_en
+- eliminado
+- fecha_eliminacion
+
+Campos de solo lectura:
+
+- id
+- estado
+- motivo
+- creado_en
+- eliminado
+- fecha_eliminacion
+
+El estado y motivo no son enviados directamente por el cliente,
+sino que son calculados por la lógica de negocio.
+
+
+6. VALIDACIÓN
+-------------
+
+El serializer valida:
+
+- nombre no vacío.
+- cupos_disponibles no negativo.
+
+Cuando los datos no cumplen las validaciones se devuelve:
+
+400 Bad Request
+
+
+7. VIEWSET
+----------
+
+Archivo:
+
+core/api_views.py
+
+Clase:
+
+PrestamoNotebookViewSet
+
+Hereda de:
+
+viewsets.ModelViewSet
+
+Utiliza:
+
+PrestamoNotebookSerializer
+
+y:
+
+PrestamoNotebookPermission
+
+
+8. LÓGICA DE NEGOCIO
+--------------------
+
+La creación y actualización utilizan:
+
+evaluar_prestamo()
+
+Esto permite mantener la lógica de evaluación existente del proyecto
+y calcular automáticamente:
+
+- estado
+- motivo
+
+
+9. ROUTER
+---------
+
+En config/urls.py se utiliza:
+
+DefaultRouter
+
+El recurso se registra como:
+
+router.register(
+    r"prestamos",
+    PrestamoNotebookViewSet,
+    basename="prestamo",
+)
+
+La API queda disponible bajo:
+
+/api/prestamos/
+
+
+10. PAGINACIÓN
+--------------
+
+Se configuró:
+
+PageNumberPagination
+
+con:
+
+PAGE_SIZE = 10
+
+Una prueba real del listado devolvió:
+
+count = 11
+page_size = 10
+
+La respuesta incluye:
+
+- count
+- next
+- previous
+- results
+
+
+11. VERIFICACIÓN
+----------------
+
+El proyecto fue comprobado mediante:
+
+venv/bin/python manage.py check
+
+Resultado:
+
+System check identified no issues (0 silenced).
+
+
+CONCLUSIÓN
+----------
+
+La API utiliza Django REST Framework con:
+
+- ModelSerializer
+- ModelViewSet
+- DefaultRouter
+- TokenAuthentication
+- permisos diferenciados
+- validación
+- paginación
+- respuestas HTTP apropiadas
