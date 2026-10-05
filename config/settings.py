@@ -1,5 +1,8 @@
+from datetime import timedelta
 from pathlib import Path
+
 from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -7,7 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Seguridad
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
-
 ALLOWED_HOSTS = []
 
 
@@ -37,11 +39,9 @@ MIDDLEWARE = [
 ]
 
 
-# Configuración principal
 ROOT_URLCONF = "config.urls"
 
 
-# Plantillas
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -73,27 +73,24 @@ DATABASES = {
 # Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
     },
 ]
 
 
 # Internacionalización
 LANGUAGE_CODE = "es"
-
 TIME_ZONE = "America/Santiago"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -101,20 +98,19 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
-# Modelo de usuario por defecto
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Configuración de inicio/cierre de sesión del HTML
+# Autenticación de las vistas HTML de ES2
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "prestamo_lista"
 LOGOUT_REDIRECT_URL = "login"
 
 
-# Configuración de Django REST Framework
+# Configuración Django REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -123,4 +119,11 @@ REST_FRAMEWORK = {
         "rest_framework.pagination.PageNumberPagination"
     ),
     "PAGE_SIZE": 10,
+}
+
+
+# Configuración JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }

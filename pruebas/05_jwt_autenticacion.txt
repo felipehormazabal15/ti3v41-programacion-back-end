@@ -1,0 +1,180 @@
+EVIDENCIA ES3 - AUTENTICACIÓN JWT
+================================
+
+Proyecto:
+Sistema de Préstamo de Notebooks
+
+
+1. ENDPOINT DE AUTENTICACIÓN
+----------------------------
+
+Endpoint:
+
+POST /api/token/
+
+El endpoint permite obtener:
+
+- access token
+- refresh token
+
+La solicitud GET al mismo endpoint no está permitida.
+
+Prueba realizada:
+
+GET /api/token/
+
+Resultado:
+
+405 Method Not Allowed
+
+Esto confirma que la obtención de credenciales se realiza mediante
+POST y no mediante GET.
+
+
+2. OBTENCIÓN DE TOKENS
+----------------------
+
+Se realizó una solicitud POST a:
+
+/api/token/
+
+utilizando las credenciales de un usuario válido.
+
+La respuesta entregó correctamente:
+
+- refresh
+- access
+
+Los tokens reales utilizados durante las pruebas no se almacenan
+en el proyecto ni se incluyen en los archivos de evidencia.
+
+
+3. ACCESO AUTENTICADO
+---------------------
+
+Se generó un access token válido y se utilizó mediante:
+
+Authorization: Bearer <ACCESS_TOKEN>
+
+Solicitud:
+
+GET /api/prestamos/
+
+Resultado:
+
+200 OK
+
+La respuesta devolvió correctamente el listado JSON de préstamos
+con paginación.
+
+La respuesta incluyó:
+
+- count
+- next
+- previous
+- results
+
+
+4. RENOVACIÓN DE CREDENCIALES
+-----------------------------
+
+Se probó el endpoint:
+
+POST /api/token/refresh/
+
+utilizando un refresh token válido.
+
+Resultado de la prueba:
+
+HTTP 200
+
+La respuesta incluyó correctamente un nuevo access token.
+
+Configuración utilizada:
+
+- Access token: 30 minutos.
+- Refresh token: 1 día.
+
+Los tokens utilizados durante la prueba no se guardaron en este archivo
+ni se incluyen en la evidencia.
+
+
+5. PROTECCIÓN DE LA API
+-----------------------
+
+Los endpoints de la API requieren autenticación.
+
+La configuración utiliza:
+
+JWTAuthentication
+
+y:
+
+IsAuthenticated
+
+Además, la clase:
+
+PrestamoNotebookPermission
+
+diferencia las operaciones según el grupo del usuario.
+
+Reglas implementadas:
+
+- Usuarios autenticados pueden consultar.
+- Usuarios de los grupos admin y normal pueden crear.
+- Solo usuarios del grupo admin pueden modificar.
+- Solo usuarios del grupo admin pueden eliminar.
+
+
+6. SEGURIDAD
+------------
+
+Los tokens se envían mediante el encabezado HTTP:
+
+Authorization: Bearer <ACCESS_TOKEN>
+
+No se utilizan tokens en la URL.
+
+Los tokens reales utilizados durante las pruebas no se guardan
+en este archivo.
+
+La duración limitada del access token reduce el tiempo de exposición
+de una credencial de acceso.
+
+El refresh token permite renovar el access token sin enviar nuevamente
+las credenciales del usuario mientras el refresh token siga siendo válido.
+
+
+7. CONFIGURACIÓN JWT
+--------------------
+
+La autenticación JWT se configuró utilizando:
+
+rest_framework_simplejwt.authentication.JWTAuthentication
+
+También se configuraron los endpoints:
+
+POST /api/token/
+
+POST /api/token/refresh/
+
+Duraciones configuradas:
+
+- Access token: 30 minutos.
+- Refresh token: 1 día.
+
+
+CONCLUSIÓN
+----------
+
+La autenticación JWT fue configurada y comprobada mediante:
+
+- endpoint de obtención de tokens.
+- access token.
+- refresh token.
+- encabezado Authorization Bearer.
+- acceso autenticado a la API.
+- expiración del access token.
+- renovación comprobada mediante /api/token/refresh/.
+- protección de los endpoints mediante autenticación.
+- permisos diferenciados según el grupo del usuario.

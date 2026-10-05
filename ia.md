@@ -4,7 +4,7 @@
 
 Utilicé ChatGPT como herramienta de Inteligencia Artificial para recibir orientación durante el desarrollo del proyecto de Programación Back End.
 
-La IA fue utilizada como apoyo para analizar los requerimientos de la Unidad 2, proponer soluciones, revisar errores y orientar las pruebas realizadas en el proyecto.
+La IA fue utilizada como apoyo para analizar los requerimientos de la Unidad 2 y la Unidad 3, proponer soluciones, revisar errores y orientar las pruebas realizadas en el proyecto.
 
 ## Consultas realizadas
 
@@ -36,7 +36,7 @@ Después de revisar las sugerencias y comprobarlas en el proyecto, adopté varia
 - Separar la regla de decisión en `services.py` para reutilizarla al crear y editar.
 - Implementar las operaciones CRUD mediante vistas, rutas y formularios.
 - Utilizar borrado lógico mediante `eliminado` y `fecha_eliminacion`.
-- Utilizar el sistema de autenticación incorporado de Django.
+- Utilizar el sistema de autenticación incorporado de Django para las vistas HTML.
 - Controlar los roles mediante grupos y un decorador propio.
 - Utilizar variables de entorno para las contraseñas de prueba.
 - Utilizar mensajes de Django para informar al usuario después de las operaciones.
@@ -77,6 +77,7 @@ Las pruebas automatizadas terminaron correctamente con:
 `OK`
 
 La herramienta de IA fue utilizada como apoyo y orientación. Las decisiones finales, modificaciones, configuraciones y pruebas fueron revisadas y realizadas en mi propio proyecto.
+
 # Uso de Inteligencia Artificial - ES3
 
 ## Uso de IA durante la implementación de la API REST
@@ -85,18 +86,18 @@ Durante la ES3 utilicé ChatGPT como apoyo para transformar el proyecto Django d
 
 Las consultas estuvieron relacionadas con:
 
-* Configuración de `rest_framework` y `rest_framework.authtoken`.
-* Configuración de `REST_FRAMEWORK` en `settings.py`.
-* Creación de `ModelSerializer`.
-* Creación de `ModelViewSet`.
-* Configuración de `DefaultRouter`.
-* Implementación de autenticación mediante tokens.
-* Creación de permisos diferenciados para los grupos `admin`, `normal` y `viewer`.
-* Validaciones de los datos enviados mediante JSON.
-* Uso correcto de códigos HTTP.
-* Paginación de resultados.
-* Documentación de los endpoints en `README.md`.
-* Pruebas de la API utilizando `curl`.
+- Configuración de `rest_framework`.
+- Configuración de `REST_FRAMEWORK` en `settings.py`.
+- Creación de `ModelSerializer`.
+- Creación de `ModelViewSet`.
+- Configuración de `DefaultRouter`.
+- Implementación de autenticación mediante tokens.
+- Creación de permisos diferenciados para los grupos `admin`, `normal` y `viewer`.
+- Validaciones de los datos enviados mediante JSON.
+- Uso correcto de códigos HTTP.
+- Paginación de resultados.
+- Documentación de los endpoints en `README.md`.
+- Pruebas de la API utilizando `curl`.
 
 ## Consulta crítica sobre seguridad
 
@@ -104,21 +105,97 @@ Una consulta realizada fue cómo proteger los endpoints de la API mediante Djang
 
 Se revisaron especialmente las siguientes posibilidades:
 
-* Utilizar `AllowAny`.
-* Colocar el token directamente en el código.
-* Enviar el token como parte de la URL.
-* Utilizar `fields = "__all__"` en el serializer.
-* Desactivar protecciones de Django mediante `csrf_exempt` sin una justificación.
+- Utilizar `AllowAny`.
+- Colocar el token directamente en el código.
+- Enviar el token como parte de la URL.
+- Utilizar `fields = "__all__"` en el serializer.
+- Desactivar protecciones de Django mediante `csrf_exempt` sin una justificación.
 
 Estas alternativas no fueron utilizadas porque podían reducir la seguridad de la aplicación o exponer información innecesariamente.
 
 En su lugar se utilizó:
 
-* `TokenAuthentication`.
-* `IsAuthenticated` como permiso predeterminado.
-* Una clase de permisos propia para diferenciar las operaciones según el grupo del usuario.
-* Campos explícitos en el serializer.
-* El encabezado `Authorization: Token <TOKEN>` para enviar las credenciales.
+- `JWTAuthentication`.
+- `IsAuthenticated` como permiso predeterminado.
+- Una clase de permisos propia para diferenciar las operaciones según el grupo del usuario.
+- Campos explícitos en el serializer.
+- El encabezado `Authorization: Bearer <ACCESS_TOKEN>` para enviar las credenciales.
+
+## Corrección de la autenticación después de la retroalimentación
+
+Durante la revisión de la implementación se detectó que `TokenAuthentication` no cumplía completamente con el requisito de contar con expiración de credenciales.
+
+La observación fue que los tokens de `TokenAuthentication` no expiran automáticamente, por lo que esta alternativa no permitía cumplir con el nivel más alto solicitado para la autenticación de la API.
+
+Se revisó una alternativa basada en JWT utilizando `djangorestframework-simplejwt`.
+
+La decisión final fue reemplazar `TokenAuthentication` por `JWTAuthentication`.
+
+La configuración implementada utiliza:
+
+- `JWTAuthentication` como clase de autenticación de DRF.
+- `TokenObtainPairView` para obtener los tokens.
+- `TokenRefreshView` para renovar el access token.
+- Access token con duración de 30 minutos.
+- Refresh token con duración de 1 día.
+- Cabecera `Authorization: Bearer <ACCESS_TOKEN>` para acceder a los endpoints protegidos.
+
+La duración de 30 minutos para el access token permite reducir el tiempo de exposición de una credencial de acceso. El refresh token de 1 día permite obtener un nuevo access token sin solicitar nuevamente las credenciales durante ese período.
+
+Esta decisión fue comprobada directamente en el proyecto.
+
+Primero se verificó que:
+
+```text
+GET /api/token/
+```
+
+respondiera:
+
+```text
+405 Method Not Allowed
+```
+
+con:
+
+```text
+Allow: POST, OPTIONS
+```
+
+Esto confirmó que el endpoint existía y aceptaba el método HTTP esperado.
+
+Posteriormente se realizó una solicitud `POST` a:
+
+```text
+/api/token/
+```
+
+con las credenciales de un usuario activo y se obtuvo una respuesta que contenía:
+
+```text
+refresh
+access
+```
+
+Finalmente se generó un access token y se utilizó mediante:
+
+```text
+Authorization: Bearer <ACCESS_TOKEN>
+```
+
+para acceder a:
+
+```text
+GET /api/prestamos/
+```
+
+La API respondió:
+
+```text
+200 OK
+```
+
+y entregó los préstamos en formato JSON.
 
 ## Ejemplo de una recomendación revisada y corregida
 
@@ -134,11 +211,11 @@ El serializer quedó encargado de validar los datos estructurales, como que los 
 
 Esto fue comprobado mediante una prueba:
 
-* Edad: `17`
-* Cupos: `3`
-* Resultado HTTP: `201 Created`
-* Estado calculado: `RECHAZADO`
-* Motivo: `La persona es menor de 18 años.`
+- Edad: `17`
+- Cupos: `3`
+- Resultado HTTP: `201 Created`
+- Estado calculado: `RECHAZADO`
+- Motivo: `La persona es menor de 18 años.`
 
 ## Ejemplo de permisos diferenciados
 
@@ -148,18 +225,18 @@ Esta alternativa fue descartada porque no respetaba los roles definidos en el pr
 
 La implementación final diferencia las operaciones:
 
-* `viewer`: puede consultar.
-* `normal`: puede consultar y crear.
-* `admin`: puede consultar, crear, modificar y eliminar.
+- `viewer`: puede consultar.
+- `normal`: puede consultar y crear.
+- `admin`: puede consultar, crear, modificar y eliminar.
 
 Las pruebas confirmaron que:
 
-* Un usuario sin grupo no pudo crear y recibió `403 Forbidden`.
-* Un usuario `normal` pudo crear un préstamo y recibió `201 Created`.
-* Un usuario `normal` no pudo modificar un préstamo y recibió `403 Forbidden`.
-* Un usuario `admin` pudo modificar y recibió `200 OK`.
-* Un usuario `normal` no pudo eliminar y recibió `403 Forbidden`.
-* Un usuario `admin` pudo eliminar y recibió `204 No Content`.
+- Un usuario sin grupo no pudo crear y recibió `403 Forbidden`.
+- Un usuario `normal` pudo crear un préstamo y recibió `201 Created`.
+- Un usuario `normal` no pudo modificar un préstamo y recibió `403 Forbidden`.
+- Un usuario `admin` pudo modificar y recibió `200 OK`.
+- Un usuario `normal` no pudo eliminar y recibió `403 Forbidden`.
+- Un usuario `admin` pudo eliminar y recibió `204 No Content`.
 
 ## Verificación de la API
 
@@ -167,15 +244,27 @@ Las recomendaciones y modificaciones fueron comprobadas mediante pruebas reales 
 
 Entre las respuestas verificadas se encuentran:
 
-* `401 Unauthorized`: solicitud sin token.
-* `403 Forbidden`: usuario autenticado sin permisos suficientes.
-* `200 OK`: consulta y modificación correcta.
-* `201 Created`: creación correcta.
-* `204 No Content`: eliminación lógica correcta.
-* `400 Bad Request`: datos inválidos.
-* `404 Not Found`: recurso inexistente.
+- `401 Unauthorized`: solicitud sin autenticación.
+- `403 Forbidden`: usuario autenticado sin permisos suficientes.
+- `200 OK`: consulta y modificación correcta.
+- `201 Created`: creación correcta.
+- `204 No Content`: eliminación lógica correcta.
+- `400 Bad Request`: datos inválidos.
+- `404 Not Found`: recurso inexistente.
 
 También se verificó la paginación de los resultados, obteniendo 10 registros por página.
+
+La autenticación JWT también fue comprobada mediante la obtención de access y refresh tokens y mediante una solicitud autenticada a:
+
+```text
+GET /api/prestamos/
+```
+
+que respondió:
+
+```text
+200 OK
+```
 
 ## Decisiones finales
 
@@ -183,15 +272,17 @@ La IA fue utilizada como apoyo para analizar alternativas y resolver problemas, 
 
 Las decisiones finales fueron:
 
-* Mantener las vistas HTML de ES2.
-* Incorporar la API en paralelo bajo `/api/`.
-* Utilizar `ModelSerializer` con campos explícitos.
-* Mantener `estado` y `motivo` como campos de solo lectura.
-* Utilizar `ModelViewSet` y `DefaultRouter`.
-* Proteger la API mediante autenticación por token.
-* Implementar permisos diferenciados por rol.
-* Reutilizar `evaluar_prestamo()` para mantener una sola regla de negocio.
-* Utilizar códigos HTTP adecuados según el resultado de cada operación.
-* Documentar la API en `README.md`.
+- Mantener las vistas HTML de ES2.
+- Incorporar la API en paralelo bajo `/api/`.
+- Utilizar `ModelSerializer` con campos explícitos.
+- Mantener `estado` y `motivo` como campos de solo lectura.
+- Utilizar `ModelViewSet` y `DefaultRouter`.
+- Utilizar `JWTAuthentication` para la autenticación de la API.
+- Utilizar access tokens con expiración de 30 minutos.
+- Utilizar refresh tokens con expiración de 1 día.
+- Utilizar permisos diferenciados por rol.
+- Reutilizar `evaluar_prestamo()` para mantener una sola regla de negocio.
+- Utilizar códigos HTTP adecuados según el resultado de cada operación.
+- Documentar la API en `README.md`.
 
-La herramienta de IA fue utilizada como apoyo y orientación. Las decisiones finales, modificaciones y pruebas fueron revisadas y realizadas en mi propio proyecto.
+La herramienta de IA fue utilizada como apoyo y orientación. Las decisiones finales, modificaciones, configuraciones y pruebas fueron revisadas y realizadas en mi propio proyecto.
